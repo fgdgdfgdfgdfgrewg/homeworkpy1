@@ -9,8 +9,9 @@ def filter_by_currency(transactions: list, currency: str) -> iter:
     :yield: Транзакции с указанной валютой
     """
     for transaction in transactions:
-        operation_currency = transaction["operationAmount"]["currency"]["code"]
-        if operation_currency == currency:
+        operation_amount = transaction["operationAmount"]
+        currency_info = operation_amount["currency"]
+        if currency_info["code"] == currency:
             yield transaction
 
 
@@ -34,5 +35,11 @@ def card_number_generator(start: int, end: int) -> iter:
     :yield: Номер карты в формате "XXXX XXXX XXXX XXXX"
     """
     for num in range(start, end + 1):
-        num_str = f"{num:016d}"  # Форматируем в 16-значное число с ведущими нулями
-        yield " ".join([num_str[i:i + 4] for i in range(0, 16, 4))
+        num_str = f"{num:016d}"
+        card_parts = [
+            num_str[0:4],
+            num_str[4:8],
+            num_str[8:12],
+            num_str[12:16]
+        ]
+        yield " ".join(card_parts)
